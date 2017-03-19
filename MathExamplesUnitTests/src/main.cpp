@@ -17,5 +17,6 @@ SCENARIO("Cards works fine", "[cards]") {
 
 		REQUIRE(rf_checker.Test(rf_hand3).success == false);
 		REQUIRE(rf_checker.Test(rf_hand4).success == false);
+		REQUIRE(!rf_checker.Test(rf_hand4).success);
 	}
 }
