@@ -1,0 +1,8 @@
+ws
+out
+MathExamples/Debug
+MathExamples/build.log
+MathExamplesSharedLib/Build.log
+MathExamplesSharedLib/Debug
+MathExamplesUnitTests/build.log
+MathExamplesUnitTests/Debug
