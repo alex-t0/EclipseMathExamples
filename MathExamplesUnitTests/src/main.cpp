@@ -44,4 +44,15 @@ SCENARIO("Cards works fine", "[cards]") {
 		REQUIRE(fk_checker.Test(fk_hand1).success);
 		REQUIRE(fk_checker.Test(fk_hand2).success);
 	}
+
+	GIVEN("Full house")
+	{
+		// FullHouse fh_checker;
+
+		Hand fh_hand1 = { "6D", "6S", "3D", "6H", "6C" };
+		Hand fh_hand2 = { "AH", "AD", "TH", "AC", "AS" };
+
+		// REQUIRE(fh_checker.Test(fh_hand1).success);
+		// REQUIRE(fh_checker.Test(fh_hand2).success);
+	}
 }
