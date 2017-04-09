@@ -140,21 +140,20 @@ public:
 
 class Poker {
 public:
-      virtual PokerResult Test(const Hand hand) = 0;
+      virtual PokerResult* Test(const Hand hand) = 0;
       virtual ~Poker() {}
 };
 
 class RoyalFlush : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
     	Card x = hand[0];
-    	auto y = x.GetSuite();
         Suite s = hand[0].GetSuite();
 
         for (int i = 1; i < 5; i++)
         {
-            if (s != hand[i].GetSuite()) return PokerResult{false};
+            if (s != hand[i].GetSuite()) return new PokerResult { false };
         }
 
         auto cardExists = [&](const Value v)
@@ -172,19 +171,19 @@ public:
             return exists;
         };
 
-        return PokerResult{cardExists(Value::Ten) && cardExists(Value::Jack) && cardExists(Value::Queen) && cardExists(Value::King) && cardExists(Value::Ace)};
+        return new PokerResult{cardExists(Value::Ten) && cardExists(Value::Jack) && cardExists(Value::Queen) && cardExists(Value::King) && cardExists(Value::Ace)};
     }
 };
 
 class StraightFlush : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
         Suite s = hand[0].GetSuite();
 
         for (int i = 1; i < 5; i++)
         {
-            if (s != hand[i].GetSuite()) return PokerResult { false };
+            if (s != hand[i].GetSuite()) return new PokerResult { false };
         }
 
         std::vector<char> values = { hand[0].GetValue(), hand[1].GetValue(), hand[2].GetValue(), hand[3].GetValue(), hand[4].GetValue() };
@@ -192,10 +191,10 @@ public:
 
         for (int i = 0; i < 4; i++)
         {
-            if (abs((int)values[i+1] - (int)values[i]) != 1) return PokerResult { false };
+            if (abs((int)values[i+1] - (int)values[i]) != 1) return new PokerResult { false };
         }
 
-        return PokerResult { true };
+        return new PokerResult { true };
     }
 };
 
@@ -211,7 +210,7 @@ public:
 
 class FourOfaKind : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
         std::vector<Card> three;
         for (int i = 0; i < 2; i++)
@@ -239,19 +238,19 @@ public:
                 if (three.size() != 3)
                     throw "this is impossible :) three != 3";
 
-                return FourOfaKindPokerResult { { hand[i], three[0], three[1], three[2] }, *otherPtr };
+                return new FourOfaKindPokerResult { { hand[i], three[0], three[1], three[2] }, *otherPtr };
             }
         }
 
-        return FourOfaKindPokerResult { false };
+        return new FourOfaKindPokerResult { false };
     }
 };
 
 class Flush : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
-        return PokerResult { hand[0].GetSuite() == hand[1].GetSuite()
+        return new PokerResult { hand[0].GetSuite() == hand[1].GetSuite()
         	&& hand[1].GetSuite() == hand[2].GetSuite()
         	&& hand[2].GetSuite() == hand[3].GetSuite()
         	&& hand[3].GetSuite() == hand[4].GetSuite()};
@@ -260,7 +259,7 @@ public:
 
 class Straight : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
     	std::vector<int> values = { hand[0].GetValue(), hand[1].GetValue(), hand[2].GetValue(), hand[3].GetValue(), hand[4].GetValue() };
     	std::sort(values.begin(), values.end());
@@ -268,24 +267,25 @@ public:
     	for (unsigned int i = 0; i < values.size() - 1; i++)
     	{
     		if (abs(values[i] - values[i+1]) != 1)
-    			return PokerResult { false };
+    			return new PokerResult { false };
     	}
 
-        return PokerResult { true };
+        return new PokerResult { true };
     }
 };
 
 class ThreeOfAKindPokerResult : public PokerResult
 {
 public:
-	ThreeOfAKindPokerResult(std::initializer_list<Card> v) : Three{v} { success = true; }
+	ThreeOfAKindPokerResult(std::initializer_list<Card> v, std::initializer_list<Card> u) : Three{v},TwoOthers{u} { success = true; }
 	ThreeOfAKindPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Three;
+    std::vector<Card> TwoOthers;
 };
 
 class ThreeOfAKind : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
     	// std::vector<int> values = { hand[0].GetVaue(), hand[1].GetVaue(), hand[2].GetVaue(), hand[3].GetVaue(), hand[4].GetVaue() };
     	// std::sort(values.begin(), values.end());
@@ -298,20 +298,20 @@ public:
 
     	if ((handSorted[2].GetValue() == handSorted[3].GetValue()) && (handSorted[3].GetValue() == handSorted[4].GetValue()))
     	{
-    		return ThreeOfAKindPokerResult { { handSorted[2], handSorted[3], handSorted[4] } };
+    		return new ThreeOfAKindPokerResult { { handSorted[2], handSorted[3], handSorted[4] }, { handSorted[0], handSorted[1] } };
     	}
 
     	if ((handSorted[1].GetValue() == handSorted[2].GetValue()) && (handSorted[2].GetValue() == handSorted[3].GetValue()))
 		{
-			return ThreeOfAKindPokerResult { { handSorted[1], handSorted[2], handSorted[3] } };
+			return new ThreeOfAKindPokerResult { { handSorted[1], handSorted[2], handSorted[3] }, { handSorted[0], handSorted[4] } };
 		}
 
     	if ((handSorted[0].GetValue() == handSorted[1].GetValue()) && (handSorted[1].GetValue() == handSorted[2].GetValue()))
 		{
-			return ThreeOfAKindPokerResult { { handSorted[0], handSorted[1], handSorted[2] } };
+			return new ThreeOfAKindPokerResult { { handSorted[0], handSorted[1], handSorted[2] }, { handSorted[3], handSorted[4] } };
 		}
 
-        return ThreeOfAKindPokerResult { false };
+        return new ThreeOfAKindPokerResult { false };
     }
 };
 
@@ -326,16 +326,17 @@ public:
 
 class FullHouse : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
     	std::vector<Card> pair;
 
     	ThreeOfAKind tok;
-    	PokerResult result = tok.Test(hand);
-    	ThreeOfAKindPokerResult* tokResult = static_cast<ThreeOfAKindPokerResult*>(&result);
+    	PokerResult* result = tok.Test(hand);
+    	// ThreeOfAKindPokerResult& tokResult = static_cast<ThreeOfAKindPokerResult&>(ref_result);
+    	ThreeOfAKindPokerResult* tokResult = static_cast<ThreeOfAKindPokerResult*>(result);
 
     	if (!tokResult->success)
-    		return FullHousePokerResult { false };
+    		return new FullHousePokerResult { false };
 
     	for (unsigned int i = 0; i < 5; i++)
     	{
@@ -346,9 +347,9 @@ public:
     	}
 
     	if (pair.size() != 2 || pair[0].GetValue() != pair[1].GetValue())
-    		return FullHousePokerResult { false };
+    		return new FullHousePokerResult { false };
 
-        return FullHousePokerResult { { tokResult->Three[0], tokResult->Three[1], tokResult->Three[2] }, { pair[0], pair[1] } };
+        return new FullHousePokerResult { { tokResult->Three[0], tokResult->Three[1], tokResult->Three[2] }, { pair[0], pair[1] } };
     }
 };
 
@@ -363,7 +364,7 @@ public:
 
 class TwoPairs : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
     	std::vector<Card> pair1, pair2;
 
@@ -393,9 +394,9 @@ public:
     	}
 
     	if (pair1.size() != 2 || pair2.size() != 2)
-    		return TwoPairsPokerResult { false };
+    		return new TwoPairsPokerResult { false };
 
-    	return TwoPairsPokerResult { { pair1[0], pair1[1] }, { pair2[0], pair2[1] } };
+    	return new TwoPairsPokerResult { { pair1[0], pair1[1] }, { pair2[0], pair2[1] } };
     }
 };
 
@@ -409,7 +410,7 @@ public:
 
 class OnePair : public Poker {
 public:
-    PokerResult Test(const Hand hand)
+    PokerResult* Test(const Hand hand)
     {
     	std::vector<Card> pair;
 
@@ -429,9 +430,9 @@ public:
     	}
 
     	if (pair.size() != 2)
-    		return OnePairPokerResult { false };
+    		return new OnePairPokerResult { false };
 
-    	return OnePairPokerResult { { pair[0], pair[1] } };
+    	return new OnePairPokerResult { { pair[0], pair[1] } };
     }
 };
 

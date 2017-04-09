@@ -41,8 +41,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1117856986" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1145223806" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.paths.626003253" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/out}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MathExamplesSharedLib/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;/data/3/soft/devel/EulerProject/out&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.2031314529" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="MathExamplesSharedLib"/>
