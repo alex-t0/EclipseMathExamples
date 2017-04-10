@@ -62,7 +62,7 @@ public:
         }
     }
 
-    ~Card() { }
+    // ~Card() { }
 
     Suite GetSuite() const
     {
@@ -136,6 +136,7 @@ public:
     PokerResult(bool value) : success{value} {}
     PokerResult() : success{false} {}
     bool success;
+    virtual ~PokerResult() { }
 };
 
 class Poker {
@@ -148,7 +149,6 @@ class RoyalFlush : public Poker {
 public:
     PokerResult* Test(const Hand hand)
     {
-    	Card x = hand[0];
         Suite s = hand[0].GetSuite();
 
         for (int i = 1; i < 5; i++)
@@ -205,7 +205,7 @@ public:
     FourOfaKindPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Four;
     Card other;
-    // ~FourOfaKindPokerResult() {}
+    virtual ~FourOfaKindPokerResult() {}
 };
 
 class FourOfaKind : public Poker {
@@ -281,6 +281,7 @@ public:
 	ThreeOfAKindPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Three;
     std::vector<Card> TwoOthers;
+    virtual ~ThreeOfAKindPokerResult() { };
 };
 
 class ThreeOfAKind : public Poker {
@@ -322,6 +323,7 @@ public:
 	FullHousePokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Three;
     std::vector<Card> Pair;
+    virtual ~FullHousePokerResult() { };
 };
 
 class FullHouse : public Poker {
@@ -337,6 +339,7 @@ public:
 
     	if (!tokResult->success)
     	{
+    		delete result;
     		FullHousePokerResult *pr_return = new FullHousePokerResult { false };
     		return pr_return;
     	}
@@ -350,9 +353,14 @@ public:
     	}
 
     	if (pair.size() != 2 || pair[0].GetValue() != pair[1].GetValue())
+    	{
+    		delete result;
     		return new FullHousePokerResult { false };
+    	}
 
-        return new FullHousePokerResult { { tokResult->Three[0], tokResult->Three[1], tokResult->Three[2] }, { pair[0], pair[1] } };
+    	FullHousePokerResult* finalResult = new FullHousePokerResult { { tokResult->Three[0], tokResult->Three[1], tokResult->Three[2] }, { pair[0], pair[1] } };
+    	delete result;
+        return finalResult;
     }
 };
 
@@ -364,6 +372,7 @@ public:
     std::vector<Card> FirstPair;
     std::vector<Card> SecondPair;
     Card Other;
+    virtual ~TwoPairsPokerResult() { }
 };
 
 class TwoPairs : public Poker {
@@ -413,6 +422,7 @@ public:
 	OnePairPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Pair;
     std::vector<Card> Others;
+    virtual ~OnePairPokerResult() { };
 };
 
 class OnePair : public Poker {

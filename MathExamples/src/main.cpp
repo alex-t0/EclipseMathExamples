@@ -179,6 +179,8 @@ int main()
 		}
 
 		cleanResults(pr1, pr2);
+		// delete pr1;
+		// delete pr2;
 
 		Flush f;
 
@@ -432,12 +434,12 @@ int main()
 		std::sort(maxValueCopyHand1.begin(), maxValueCopyHand1.end(), cardSortFunc);
 		std::sort(maxValueCopyHand2.begin(), maxValueCopyHand2.end(), cardSortFunc);
 
-		bool firstWin = false;
+		bool firstWinByMostValuedCard = false;
 		for (unsigned int i = 4; i >= 0; i--)
 		{
 			if ((int)maxValueCopyHand1[i].GetValue() > (int)maxValueCopyHand2[i].GetValue())
 			{
-				firstWin = true;
+				firstWinByMostValuedCard = true;
 				break;
 			}
 			else if ((int)maxValueCopyHand1[i].GetValue() == (int)maxValueCopyHand2[i].GetValue())
@@ -450,15 +452,13 @@ int main()
 			}
 		}
 
-		if (firstWin == true)
+		if (firstWinByMostValuedCard == true)
 		{
 			winCount++;
-			cleanResults(pr1, pr2);
 			continue;
 		}
 		else
 		{
-			cleanResults(pr1, pr2);
 			continue;
 		}
 	}
