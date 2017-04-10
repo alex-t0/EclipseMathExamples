@@ -20,10 +20,10 @@ int main()
 	int winCount = 0;
 	for (int i = 0; i < 1000; i++)
 	{
-		auto cleanResults = [=](PokerResult* pr1, PokerResult* pr2)
+		auto cleanResults = [=](PokerResult* r1, PokerResult* r2)
 		{
-			delete pr1;
-			delete pr2;
+			delete r1;
+			delete r2;
 		};
 
 		auto cardSortFunc = [=](Card a, Card b)
@@ -284,8 +284,186 @@ int main()
 				cleanResults(pr1, pr2);
 				continue;
 			}
+			else
+			{
+				cleanResults(pr1, pr2);
+				continue;
+			}
+		}
+
+		cleanResults(pr1, pr2);
+
+		TwoPairs tp;
+
+		pr1 = tp.Test(hands1[i]);
+		pr2 = tp.Test(hands2[i]);
+
+		if (!pr1->success && pr2->success)
+		{
+			cleanResults(pr1, pr2);
+			continue;
+		}
+
+		if (pr1->success && !pr2->success)
+		{
+			cleanResults(pr1, pr2);
+			winCount++;
+			continue;
+		}
+
+		if (pr1->success && pr2->success)
+		{
+			TwoPairsPokerResult* tpResult1 = static_cast<TwoPairsPokerResult*>(pr1);
+			TwoPairsPokerResult* tpResult2 = static_cast<TwoPairsPokerResult*>(pr2);
+
+			if ((int)tpResult1->FirstPair[0].GetValue() > (int)tpResult2->FirstPair[0].GetValue())
+			{
+				winCount++;
+				cleanResults(pr1, pr2);
+				continue;
+			}
+			else
+			{
+				cleanResults(pr1, pr2);
+				continue;
+			}
+
+			if ((int)tpResult1->SecondPair[0].GetValue() > (int)tpResult2->SecondPair[0].GetValue())
+			{
+				winCount++;
+				cleanResults(pr1, pr2);
+				continue;
+			}
+			else
+			{
+				cleanResults(pr1, pr2);
+				continue;
+			}
+
+			if ((int)tpResult1->Other.GetValue() > (int)tpResult2->Other.GetValue())
+			{
+				winCount++;
+				cleanResults(pr1, pr2);
+				continue;
+			}
+			else
+			{
+				cleanResults(pr1, pr2);
+				continue;
+			}
+		}
+
+		cleanResults(pr1, pr2);
+
+		OnePair op;
+
+		pr1 = op.Test(hands1[i]);
+		pr2 = op.Test(hands2[i]);
+
+		if (!pr1->success && pr2->success)
+		{
+			cleanResults(pr1, pr2);
+			continue;
+		}
+
+		if (pr1->success && !pr2->success)
+		{
+			cleanResults(pr1, pr2);
+			winCount++;
+			continue;
+		}
+
+		if (pr1->success && pr2->success)
+		{
+			OnePairPokerResult* opResult1 = static_cast<OnePairPokerResult*>(pr1);
+			OnePairPokerResult* opResult2 = static_cast<OnePairPokerResult*>(pr2);
+
+			if ((int)opResult1->Pair[0].GetValue() > (int)opResult2->Pair[0].GetValue())
+			{
+				winCount++;
+				cleanResults(pr1, pr2);
+				continue;
+			}
+			else
+			{
+				cleanResults(pr1, pr2);
+				continue;
+			}
+
+			std::sort(opResult1->Others.begin(), opResult1->Others.end(), cardSortFunc);
+			std::sort(opResult2->Others.begin(), opResult2->Others.end(), cardSortFunc);
+
+			bool firstWin = false;
+			for (unsigned int i = 2; i >= 0; i--)
+			{
+				if ((int)opResult1->Others[i].GetValue() > (int)opResult2->Others[i].GetValue())
+				{
+					firstWin = true;
+					break;
+				}
+				else if ((int)opResult1->Others[i].GetValue() == (int)opResult2->Others[i].GetValue())
+				{
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			if (firstWin == true)
+			{
+				winCount++;
+				cleanResults(pr1, pr2);
+				continue;
+			}
+			else
+			{
+				cleanResults(pr1, pr2);
+				continue;
+			}
+		}
+
+		cleanResults(pr1, pr2);
+
+		Hand maxValueCopyHand1 = hands1[i];
+		Hand maxValueCopyHand2 = hands2[i];
+
+		std::sort(maxValueCopyHand1.begin(), maxValueCopyHand1.end(), cardSortFunc);
+		std::sort(maxValueCopyHand2.begin(), maxValueCopyHand2.end(), cardSortFunc);
+
+		bool firstWin = false;
+		for (unsigned int i = 4; i >= 0; i--)
+		{
+			if ((int)maxValueCopyHand1[i].GetValue() > (int)maxValueCopyHand2[i].GetValue())
+			{
+				firstWin = true;
+				break;
+			}
+			else if ((int)maxValueCopyHand1[i].GetValue() == (int)maxValueCopyHand2[i].GetValue())
+			{
+				continue;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (firstWin == true)
+		{
+			winCount++;
+			cleanResults(pr1, pr2);
+			continue;
+		}
+		else
+		{
+			cleanResults(pr1, pr2);
+			continue;
 		}
 	}
+
+	std::cout << "Win count = " << winCount << std::endl;
 
 	return 0;
 }

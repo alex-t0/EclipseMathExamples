@@ -277,7 +277,7 @@ public:
 class ThreeOfAKindPokerResult : public PokerResult
 {
 public:
-	ThreeOfAKindPokerResult(std::initializer_list<Card> v, std::initializer_list<Card> u) : Three{v},TwoOthers{u} { success = true; }
+	ThreeOfAKindPokerResult(std::initializer_list<Card> v, std::initializer_list<Card> u) : Three{v}, TwoOthers{u} { success = true; }
 	ThreeOfAKindPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Three;
     std::vector<Card> TwoOthers;
@@ -336,7 +336,10 @@ public:
     	ThreeOfAKindPokerResult* tokResult = static_cast<ThreeOfAKindPokerResult*>(result);
 
     	if (!tokResult->success)
-    		return new FullHousePokerResult { false };
+    	{
+    		FullHousePokerResult *pr_return = new FullHousePokerResult { false };
+    		return pr_return;
+    	}
 
     	for (unsigned int i = 0; i < 5; i++)
     	{
@@ -356,17 +359,18 @@ public:
 class TwoPairsPokerResult : public PokerResult
 {
 public:
-	TwoPairsPokerResult(std::initializer_list<Card> firstPair, std::initializer_list<Card> secondPair) : FirstPair{firstPair}, SecondPair{secondPair} { success = true; }
+	TwoPairsPokerResult(std::initializer_list<Card> firstPair, std::initializer_list<Card> secondPair, Card other) : FirstPair{firstPair}, SecondPair{secondPair}, Other{other} { success = true; }
 	TwoPairsPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> FirstPair;
     std::vector<Card> SecondPair;
+    Card Other;
 };
 
 class TwoPairs : public Poker {
 public:
     PokerResult* Test(const Hand hand)
     {
-    	std::vector<Card> pair1, pair2;
+    	std::vector<Card> pair1, pair2, others;
 
     	Hand handSorted = hand; // full copy of hand
     	std::sort(handSorted.begin(), handSorted.end(), [=](Card a, Card b)
@@ -391,21 +395,24 @@ public:
     			p.push_back(handSorted[i - 1]);
     			pair_found = true;
     		}
+    		else
+    			others.push_back(handSorted[i]);
     	}
 
-    	if (pair1.size() != 2 || pair2.size() != 2)
+    	if (pair1.size() != 2 || pair2.size() != 2 || others.size() != 1)
     		return new TwoPairsPokerResult { false };
 
-    	return new TwoPairsPokerResult { { pair1[0], pair1[1] }, { pair2[0], pair2[1] } };
+    	return new TwoPairsPokerResult { { pair1[0], pair1[1] }, { pair2[0], pair2[1] }, others[0] };
     }
 };
 
 class OnePairPokerResult : public PokerResult
 {
 public:
-	OnePairPokerResult(std::initializer_list<Card> pair) : Pair{pair} { success = true; }
+	OnePairPokerResult(std::initializer_list<Card> pair, std::initializer_list<Card> others) : Pair{pair}, Others{others} { success = true; }
 	OnePairPokerResult(bool success) : PokerResult(success) {}
     std::vector<Card> Pair;
+    std::vector<Card> Others;
 };
 
 class OnePair : public Poker {
@@ -413,6 +420,7 @@ public:
     PokerResult* Test(const Hand hand)
     {
     	std::vector<Card> pair;
+    	std::vector<Card> others;
 
     	Hand handSorted = hand; // full copy of hand
     	std::sort(handSorted.begin(), handSorted.end(), [=](Card a, Card b)
@@ -427,12 +435,16 @@ public:
     			pair.push_back(handSorted[i]);
     			pair.push_back(handSorted[i - 1]);
     		}
+    		else
+    		{
+    			others.push_back(handSorted[i]);
+    		}
     	}
 
     	if (pair.size() != 2)
     		return new OnePairPokerResult { false };
 
-    	return new OnePairPokerResult { { pair[0], pair[1] } };
+    	return new OnePairPokerResult { { pair[0], pair[1] }, { others[0], others[1], others[2] } };
     }
 };
 

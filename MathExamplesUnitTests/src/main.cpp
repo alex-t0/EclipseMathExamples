@@ -34,7 +34,7 @@ SCENARIO("Cards works fine", "[cards]") {
 	    DerivedClass &another_d = static_cast<DerivedClass&>(br); // downcast
 	    another_d.hello();
 
-	    ThreeOfAKindPokerResult derived { { Card{"5H"}, Card{"5S"}, Card{"5C"} } };
+	    ThreeOfAKindPokerResult derived { { Card{"5H"}, Card{"5S"}, Card{"5C"} }, { Card{"QS"}, Card{"TH"} } };
 	    PokerResult& base = derived;
 	    PokerResult base2 = derived;
 	    ThreeOfAKindPokerResult& converted = static_cast<ThreeOfAKindPokerResult&>(base);
