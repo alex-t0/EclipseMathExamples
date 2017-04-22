@@ -2,6 +2,7 @@
 
 #include "include/Catch.h"
 #include "sources/include/Cards.h"
+#include "sources/include/CardGame.h"
 
 
 class BaseClass {
@@ -130,5 +131,161 @@ SCENARIO("Cards works fine", "[cards]") {
 		REQUIRE(pr->success == false);
 		delete pr;
 		// REQUIRE(fh_checker.Test(fh_hand2).success);
+	}
+
+	GIVEN("Play examples")
+	{
+		{
+			Hand hand1 = { Card{"5H"}, Card{"5C"}, Card{"AC"}, Card{"AS"}, Card{"5S"} };
+			Hand hand2 = { Card{"2C"}, Card{"3S"}, Card{"6S"}, Card{"5D"}, Card{"4D"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"5H"}, Card{"5C"}, Card{"AC"}, Card{"7S"}, Card{"5S"} };
+			Hand hand2 = { Card{"2C"}, Card{"3S"}, Card{"6S"}, Card{"5D"}, Card{"4D"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand2 = { Card{"5H"}, Card{"5C"}, Card{"AC"}, Card{"7S"}, Card{"5S"} };
+			Hand hand1 = { Card{"2C"}, Card{"3S"}, Card{"6S"}, Card{"5D"}, Card{"4D"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"5H"}, Card{"5C"}, Card{"6S"}, Card{"7S"}, Card{"KD"} };
+			Hand hand2 = { Card{"2C"}, Card{"3S"}, Card{"8S"}, Card{"8D"}, Card{"TD"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand1 = { Card{"5D"}, Card{"8C"}, Card{"9S"}, Card{"JS"}, Card{"AC"} };
+			Hand hand2 = { Card{"2C"}, Card{"5C"}, Card{"7D"}, Card{"8S"}, Card{"QH"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"2D"}, Card{"9C"}, Card{"AS"}, Card{"AH"}, Card{"AC"} };
+			Hand hand2 = { Card{"3D"}, Card{"6D"}, Card{"7D"}, Card{"TD"}, Card{"QD"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand1 = { Card{"4D"}, Card{"6S"}, Card{"9H"}, Card{"QH"}, Card{"QC"} };
+			Hand hand2 = { Card{"3D"}, Card{"6D"}, Card{"7H"}, Card{"QD"}, Card{"QS"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"2H"}, Card{"2D"}, Card{"4C"}, Card{"4D"}, Card{"4S"} };
+			Hand hand2 = { Card{"3C"}, Card{"3D"}, Card{"3S"}, Card{"9S"}, Card{"9D"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"5D"}, Card{"JH"}, Card{"AC"}, Card{"5C"}, Card{"9S"} };
+			Hand hand2 = { Card{"TS"}, Card{"4C"}, Card{"JD"}, Card{"8C"}, Card{"KS"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"9C"}, Card{"KD"}, Card{"4H"}, Card{"AD"}, Card{"TD"} };
+			Hand hand2 = { Card{"9S"}, Card{"4S"}, Card{"7D"}, Card{"6H"}, Card{"5D"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"4C"}, Card{"7H"}, Card{"AS"}, Card{"3S"}, Card{"QD"} };
+			Hand hand2 = { Card{"9H"}, Card{"3D"}, Card{"8C"}, Card{"2S"}, Card{"KH"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand2 = { Card{"4C"}, Card{"7H"}, Card{"AS"}, Card{"3S"}, Card{"QD"} };
+			Hand hand1 = { Card{"9H"}, Card{"3D"}, Card{"8C"}, Card{"2S"}, Card{"KH"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand1 = { Card{"4C"}, Card{"7D"}, Card{"AS"}, Card{"3S"}, Card{"QD"} };
+			Hand hand2 = { Card{"5H"}, Card{"6H"}, Card{"7H"}, Card{"9H"}, Card{"8H"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand1 = { Card{"2D"}, Card{"7D"}, Card{"AD"}, Card{"JD"}, Card{"QD"} };
+			Hand hand2 = { Card{"5H"}, Card{"6H"}, Card{"7H"}, Card{"9H"}, Card{"8H"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand2 = { Card{"2D"}, Card{"7D"}, Card{"AD"}, Card{"JD"}, Card{"QD"} };
+			Hand hand1 = { Card{"5H"}, Card{"6H"}, Card{"7H"}, Card{"9H"}, Card{"8H"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
+
+		{
+			Hand hand1 = { Card{"7D"}, Card{"TS"}, Card{"9S"}, Card{"JD"}, Card{"8C"} };
+			Hand hand2 = { Card{"5H"}, Card{"6H"}, Card{"7H"}, Card{"9H"}, Card{"8H"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
+			Hand hand2 = { Card{"7D"}, Card{"TS"}, Card{"9S"}, Card{"JD"}, Card{"8C"} };
+			Hand hand1 = { Card{"5H"}, Card{"6H"}, Card{"7H"}, Card{"9H"}, Card{"8H"} };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(result);
+		}
 	}
 }

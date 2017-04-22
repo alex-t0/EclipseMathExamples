@@ -389,7 +389,7 @@ public:
 
     	bool pair_found = false;
     	bool pair_count = 0;
-    	for (unsigned int i = 4; i > 0; i--)
+    	for (int i = 4; i > 0; i--)
     	{
     		if (pair_found == true)
     		{
@@ -438,12 +438,20 @@ public:
     		return (int)a.GetValue() < (int)b.GetValue();
     	});
 
-    	for (unsigned int i = 4; i > 0; i--)
+    	bool pairFound = false;
+    	for (int i = 4; i >= 0; i--)
     	{
-    		if (handSorted[i].GetValue() == handSorted[i - 1].GetValue())
+    		if (pairFound == true)
+    		{
+    			pairFound = false;
+    			continue;
+    		}
+
+    		if (i >= 1 && handSorted[i].GetValue() == handSorted[i - 1].GetValue())
     		{
     			pair.push_back(handSorted[i]);
     			pair.push_back(handSorted[i - 1]);
+    			pairFound = true;
     		}
     		else
     		{
