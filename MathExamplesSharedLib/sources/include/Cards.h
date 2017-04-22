@@ -3,6 +3,7 @@
 
 #include <initializer_list>
 #include <algorithm>
+#include <iostream>
 
 enum class Suite : char
 {
@@ -83,10 +84,65 @@ public:
 	{
 		return other.GetSuite() != this->GetSuite() || other.GetValue() != this->GetValue();
 	}
+
+    friend std::ostream& operator<<(std::ostream& os, const Card& card);
+
 private:
     Suite suite;
     Value value;
 };
+
+std::ostream& operator<<(std::ostream& os, const Card& card)
+{
+	std::string svalue = "";
+
+	switch (card.GetSuite())
+	{
+		case Suite::Clubs:
+			svalue = "C";
+			break;
+		case Suite::Diamonds:
+			svalue = "D";
+			break;
+		case Suite::Hearts:
+			svalue = "H";
+			break;
+		case Suite::Spades:
+			svalue = "S";
+			break;
+		case Suite::NotInitialized:
+			throw "Must be initialized";
+	}
+
+	int ivalue = (int)card.GetValue();
+	if (ivalue < 10)
+		os << ivalue;
+	else
+	{
+		switch (ivalue)
+		{
+			case 10:
+				os << "T";
+				break;
+			case 11:
+				os << "J";
+				break;
+			case 12:
+				os << "Q";
+				break;
+			case 13:
+				os << "K";
+				break;
+			case 14:
+				os << "A";
+				break;
+		}
+	}
+
+	os << svalue;
+
+	return os;
+}
 
 class Hand
 {
@@ -127,9 +183,17 @@ public:
     {
       	return cards.end();
     }
-private:
+
+    friend std::ostream& operator<<(std::ostream& os, const Hand& h);
+ private:
     std::vector<Card> cards;
 };
+
+std::ostream& operator<<(std::ostream& os, const Hand& h)
+{
+    os << h[0] << ' ' << h[1] << ' ' << h[2] << ' ' << h[3] << ' ' << h[4];
+    return os;
+}
 
 class PokerResult {
 public:
