@@ -413,11 +413,16 @@ bool CardGame::Play(Hand hand1, Hand hand2)
 			std::sort(opResult2->Others.begin(), opResult2->Others.end(), cardSortFunc);
 
 			bool firstWin = false;
-			for (int i = 0; i <= 2; i++)
+			for (int i = 2; i >= 0; i--)
 			{
 				if ((int)opResult1->Others[i].GetValue() > (int)opResult2->Others[i].GetValue())
 				{
 					firstWin = true;
+					break;
+				}
+				else if ((int)opResult1->Others[i].GetValue() < (int)opResult2->Others[i].GetValue())
+				{
+					firstWin = false;
 					break;
 				}
 				else if ((int)opResult1->Others[i].GetValue() == (int)opResult2->Others[i].GetValue())

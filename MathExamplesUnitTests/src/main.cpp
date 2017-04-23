@@ -501,6 +501,16 @@ SCENARIO("Cards works fine", "[cards]") {
 		}
 
 		{
+			// 25
+			Hand hand1 = { Card { "6D" }, Card { "7C" }, Card { "5D" }, Card { "5H" }, Card { "3S" } };
+			Hand hand2 = { Card { "5C" }, Card { "JC" }, Card { "2H" }, Card { "5S" }, Card { "3D" } };
+
+			bool result = CardGame::Play(hand1, hand2);
+
+			REQUIRE(!result);
+		}
+
+		{
 			// 405
 			Hand hand1 = { Card { "4C" }, Card { "2S" }, Card { "AD" }, Card { "QS" }, Card { "6C" } };
 			Hand hand2 = { Card { "9S" }, Card { "QD" }, Card { "TH" }, Card { "QH" }, Card { "5C" } };
