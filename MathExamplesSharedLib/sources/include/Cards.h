@@ -453,7 +453,7 @@ public:
 
     	bool pair_found = false;
     	bool pair_count = 0;
-    	for (int i = 4; i > 0; i--)
+    	for (int i = 4; i >= 0; i--)
     	{
     		if (pair_found == true)
     		{
@@ -461,12 +461,13 @@ public:
     			continue;
     		}
 
-    		if (handSorted[i].GetValue() == handSorted[i - 1].GetValue())
+    		if (i>0 && handSorted[i].GetValue() == handSorted[i - 1].GetValue())
     		{
     			std::vector<Card>& p = pair_count == 0 ? pair1 : pair2;
     			p.push_back(handSorted[i]);
     			p.push_back(handSorted[i - 1]);
     			pair_found = true;
+    			pair_count++;
     		}
     		else
     			others.push_back(handSorted[i]);
